@@ -30,14 +30,14 @@ func cryptPem() {
 	fmt.Printf("Pri: %s\n", eccKey.PrivateKey)
 	fmt.Printf("Pub: %s\n", eccKey.PublicKey)
 
-	base64Text, err := ecc.EccEncrypt([]byte(msg), eccKey.PublicKey)
+    text, err := ecc.EccEncrypt([]byte(msg), eccKey.PublicKey)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("Secret:%s\n", base64Text)
+	fmt.Printf("Secret:%s\n", text)
 
-	plaintext, err := ecc.EccDecrypt(base64Text, eccKey.PrivateKey)
+	plaintext, err := ecc.EccDecrypt(text, eccKey.PrivateKey)
 	if err != nil {
 		fmt.Println(err)
 		return

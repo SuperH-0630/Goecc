@@ -110,30 +110,26 @@ func EccDecryptByHex(hexCipherText, hexPriKey string) (plainText []byte, err err
 	return eccDecrypt(cipherTextBytes, privateBytes)
 }
 
-func EccEncrypt(plainText []byte, pubKey string) (base64CipherText string, err error) {
+func EccEncrypt(plainText []byte, pubKey string) (cipherText []byte, err error) {
 	block, _ := pem.Decode([]byte(pubKey))
 	if block == nil {
 		// TODO 记录日志
-		return "", fmt.Errorf("bad public key")
+		return nil, fmt.Errorf("bad public key")
 	}
 
 	cipherBytes, err := eccEncrypt(plainText, block.Bytes)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return base64.StdEncoding.EncodeToString(cipherBytes), nil
+	return cipherBytes, nil
 }
 
-func EccDecrypt(base64CipherText, priKey string) (plainText []byte, err error) {
+func EccDecrypt(cipherText []byte, priKey string) (plainText []byte, err error) {
 	block, _ := pem.Decode([]byte(priKey))
 	if block == nil {
 		// TODO 记录日志
 		return nil, fmt.Errorf("bad private key")
 	}
 
-	cipherTextBytes, err := base64.StdEncoding.DecodeString(base64CipherText)
-	if err != nil {
-		return nil, err
-	}
-	return eccDecrypt(cipherTextBytes, block.Bytes)
+	return eccDecrypt(cipherText, block.Bytes)
 }

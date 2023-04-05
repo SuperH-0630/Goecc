@@ -35,14 +35,14 @@ func cryptPem() {
 	fmt.Printf("Pri: %s\n", eccKey.PrivateKey)
 	fmt.Printf("Pub: %s\n", eccKey.PublicKey)
 
-	base64Text, err := ecc.EccEncrypt([]byte(msg), eccKey.PublicKey)
+	text, err := ecc.EccEncrypt([]byte(msg), eccKey.PublicKey)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("Secret:%s\n", base64Text)
+	fmt.Printf("Secret:%s\n", text)
 
-	plaintext, err := ecc.EccDecrypt(base64Text, eccKey.PrivateKey)
+	plaintext, err := ecc.EccDecrypt(text, eccKey.PrivateKey)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -60,14 +60,14 @@ func cryptBase64() {
 	fmt.Printf("Pri: %s\n", eccBase64Key.PrivateKey)
 	fmt.Printf("Pub: %s\n", eccBase64Key.PublicKey)
 
-	base64Text, err := ecc.EccEncryptToBase64([]byte(msg), eccBase64Key.PublicKey)
+	text, err := ecc.EccEncryptToBase64([]byte(msg), eccBase64Key.PublicKey)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("Secret:%s\n", base64Text)
+	fmt.Printf("Secret:%s\n", text)
 
-	plaintext, err := ecc.EccDecryptByBase64(base64Text, eccBase64Key.PrivateKey)
+	plaintext, err := ecc.EccDecryptByBase64(text, eccBase64Key.PrivateKey)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -85,14 +85,14 @@ func cryptHex() {
 	fmt.Printf("Pri: %s\n", eccHexKey.PrivateKey)
 	fmt.Printf("Pub: %s\n", eccHexKey.PublicKey)
 
-	base64Text, err := ecc.EccEncryptToHex([]byte(msg), eccHexKey.PublicKey)
+	text, err := ecc.EccEncryptToHex([]byte(msg), eccHexKey.PublicKey)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("Secret:%s\n", base64Text)
+	fmt.Printf("Secret:%s\n", text)
 
-	plaintext, err := ecc.EccDecryptByHex(base64Text, eccHexKey.PrivateKey)
+	plaintext, err := ecc.EccDecryptByHex(text, eccHexKey.PrivateKey)
 	if err != nil {
 		fmt.Println(err)
 		return

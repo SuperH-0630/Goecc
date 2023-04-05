@@ -59,7 +59,7 @@ func TestEccEncrypt(t *testing.T) {
 	assert.Equal(t, msg, string(plainText))
 	_, err = EccDecrypt(cipherText, pemKey.PublicKey)
 	assert.NotNil(t, err)
-	_, err = EccDecrypt("badText", pemKey.PrivateKey)
+	_, err = EccDecrypt([]byte("badText"), pemKey.PrivateKey)
 	assert.NotNil(t, err)
 	_, err = EccDecrypt(cipherText, "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAElJ")
 	assert.NotNil(t, err)
