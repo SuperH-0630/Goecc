@@ -6,6 +6,7 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/hex"
+	"encoding/pem"
 	"fmt"
 	"math/big"
 	"os"
@@ -122,4 +123,38 @@ func EccVerifySignHex(msg []byte, hexrSign, hexsSign, hexPubKey string) bool {
 		return false
 	}
 	return eccVerifySign(msg, pubBytes, rSignBytes, sSignBytes)
+}
+
+func EccSign(msg []byte, priKey string) (hexrSign, hexsSign string, err error) {
+	block, _ := pem.Decode([]byte(priKey))
+	if block == nil {
+		// TODO 记录日志
+		_, _ = fmt.Fprintf(os.Stderr, "bad private key")
+		return "", "", fmt.Errorf("bad private key")
+	}
+
+	rSign, sSign, err := eccSign(msg, block.Bytes)
+	if err != nil {
+		return "", "", err
+	}
+	return hex.EncodeToString(rSign), hex.EncodeToString(sSign), nil
+}
+
+func EccVerifySign(msg []byte, hexrSign, hexsSign, pubKey string) bool {
+	block, _ := pem.Decode([]byte(pubKey))
+	if block == nil {
+		// TODO 记录日志
+		_, _ = fmt.Fprintf(os.Stderr, "bad public key")
+		return false
+	}
+
+	rSignBytes, err := hex.DecodeString(hexrSign)
+	if err != nil {
+		return false
+	}
+	sSignBytes, err := hex.DecodeString(hexsSign)
+	if err != nil {
+		return false
+	}
+	return eccVerifySign(msg, block.Bytes, rSignBytes, sSignBytes)
 }

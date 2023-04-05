@@ -6,6 +6,7 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/hex"
+	"encoding/pem"
 	"fmt"
 	"os"
 	"runtime"
@@ -110,4 +111,34 @@ func EccDecryptByHex(hexCipherText, hexPriKey string) (plainText []byte, err err
 		return nil, err
 	}
 	return eccDecrypt(cipherTextBytes, privateBytes)
+}
+
+func EccEncrypt(plainText []byte, pubKey string) (base64CipherText string, err error) {
+	block, _ := pem.Decode([]byte(pubKey))
+	if block == nil {
+		// TODO 记录日志
+		_, _ = fmt.Fprintf(os.Stderr, "bad public key")
+		return "", fmt.Errorf("bad public key")
+	}
+
+	cipherBytes, err := eccEncrypt(plainText, block.Bytes)
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(cipherBytes), nil
+}
+
+func EccDecrypt(base64CipherText, priKey string) (plainText []byte, err error) {
+	block, _ := pem.Decode([]byte(priKey))
+	if block == nil {
+		// TODO 记录日志
+		_, _ = fmt.Fprintf(os.Stderr, "bad private key")
+		return nil, fmt.Errorf("bad private key")
+	}
+
+	cipherTextBytes, err := base64.StdEncoding.DecodeString(base64CipherText)
+	if err != nil {
+		return nil, err
+	}
+	return eccDecrypt(cipherTextBytes, block.Bytes)
 }
