@@ -27,22 +27,22 @@ func main() {
 
 func cryptPem() {
 	msg := "ABCDEFG"
-	eccBase64Key, err := ecc.GenerateEccKeyPem()
+	eccKey, err := ecc.GenerateEccKeyPem()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("Pri: %s\n", eccBase64Key.PrivateKey)
-	fmt.Printf("Pub: %s\n", eccBase64Key.PublicKey)
+	fmt.Printf("Pri: %s\n", eccKey.PrivateKey)
+	fmt.Printf("Pub: %s\n", eccKey.PublicKey)
 
-	base64Text, err := ecc.EccEncrypt([]byte(msg), eccBase64Key.PublicKey)
+	base64Text, err := ecc.EccEncrypt([]byte(msg), eccKey.PublicKey)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	fmt.Printf("Secret:%s\n", base64Text)
 
-	plaintext, err := ecc.EccDecrypt(base64Text, eccBase64Key.PrivateKey)
+	plaintext, err := ecc.EccDecrypt(base64Text, eccKey.PrivateKey)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -77,22 +77,22 @@ func cryptBase64() {
 
 func cryptHex() {
 	msg := "ABCDEFG"
-	eccBase64Key, err := ecc.GenerateEccKeyHex()
+	eccHexKey, err := ecc.GenerateEccKeyHex()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("Pri: %s\n", eccBase64Key.PrivateKey)
-	fmt.Printf("Pub: %s\n", eccBase64Key.PublicKey)
+	fmt.Printf("Pri: %s\n", eccHexKey.PrivateKey)
+	fmt.Printf("Pub: %s\n", eccHexKey.PublicKey)
 
-	base64Text, err := ecc.EccEncryptToHex([]byte(msg), eccBase64Key.PublicKey)
+	base64Text, err := ecc.EccEncryptToHex([]byte(msg), eccHexKey.PublicKey)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	fmt.Printf("Secret:%s\n", base64Text)
 
-	plaintext, err := ecc.EccDecryptByHex(base64Text, eccBase64Key.PrivateKey)
+	plaintext, err := ecc.EccDecryptByHex(base64Text, eccHexKey.PrivateKey)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -102,21 +102,21 @@ func cryptHex() {
 
 func signPem() {
 	msg := "ABCDEFG"
-	eccBase64Key, err := ecc.GenerateEccKeyPem()
+	eccKey, err := ecc.GenerateEccKeyPem()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("Pri: %s\n", eccBase64Key.PrivateKey)
-	fmt.Printf("Pub: %s\n", eccBase64Key.PublicKey)
+	fmt.Printf("Pri: %s\n", eccKey.PrivateKey)
+	fmt.Printf("Pub: %s\n", eccKey.PublicKey)
 
-	rSign, sSign, err := ecc.EccSign([]byte(msg), eccBase64Key.PrivateKey)
+	rSign, sSign, err := ecc.EccSign([]byte(msg), eccKey.PrivateKey)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	fmt.Printf("R_Sign: %s\nS_Sign: %s\n", rSign, sSign)
-	res := ecc.EccVerifySign([]byte(msg), rSign, sSign, eccBase64Key.PublicKey)
+	res := ecc.EccVerifySign([]byte(msg), rSign, sSign, eccKey.PublicKey)
 	fmt.Printf("Sign: %v\n", res)
 }
 
@@ -142,20 +142,20 @@ func signBase64() {
 
 func signHex() {
 	msg := "ABCDEFG"
-	eccBase64Key, err := ecc.GenerateEccKeyHex()
+	eccHexKey, err := ecc.GenerateEccKeyHex()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("Pri: %s\n", eccBase64Key.PrivateKey)
-	fmt.Printf("Pub: %s\n", eccBase64Key.PublicKey)
+	fmt.Printf("Pri: %s\n", eccHexKey.PrivateKey)
+	fmt.Printf("Pub: %s\n", eccHexKey.PublicKey)
 
-	rSign, sSign, err := ecc.EccSignHex([]byte(msg), eccBase64Key.PrivateKey)
+	rSign, sSign, err := ecc.EccSignHex([]byte(msg), eccHexKey.PrivateKey)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	fmt.Printf("R_Sign: %s\nS_Sign: %s\n", rSign, sSign)
-	res := ecc.EccVerifySignHex([]byte(msg), rSign, sSign, eccBase64Key.PublicKey)
+	res := ecc.EccVerifySignHex([]byte(msg), rSign, sSign, eccHexKey.PublicKey)
 	fmt.Printf("Sign: %v\n", res)
 }
