@@ -46,8 +46,8 @@ func cryptPem() {
 }
 ```
 `GenerateEccKeyPem`生成密钥。
-`EccEncrypt`加密字节，返回base64字符串。
-`EccDecrypt`解密base64字符串。
+`EccEncrypt`加密字节，返回字节。
+`EccDecrypt`解密字节。
 
 使用PEM签名：
 ```go
@@ -71,7 +71,8 @@ func signPem() {
 	fmt.Printf("Sign: %v\n", res)
 }
 ```
-`EccSign`生成签名的`rSign`和`sSign`。`EccSign`验证签名的（传入文件字节）。
+`EccSign`生成签名的`rSign`和`sSign`。
+`EccSign`验证签名的（传入文件字节）。
 
 ## HEX密钥使用指南
 类似于PEM密钥，函数带有Hex后缀。
