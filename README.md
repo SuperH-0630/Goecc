@@ -1,5 +1,6 @@
 # GoECC
-`golang`语言的ecc实现。
+`golang`语言的ecc实现。  
+基于仓库：[goEncrypt](https://github.com/wumansgy/goEncrypt)
 
 ## PEM密钥使用指南
 PEM密钥是类似于如下的密钥：
