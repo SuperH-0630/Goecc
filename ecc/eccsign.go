@@ -3,6 +3,7 @@ package ecc
 import (
 	"crypto/ecdsa"
 	"crypto/rand"
+	"crypto/sha256"
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/hex"
@@ -10,9 +11,13 @@ import (
 	"fmt"
 	"math/big"
 	"runtime"
-
-	"git.wuntsong.com/wunchain/goecc/hash"
 )
+
+func _sha256(data []byte) []byte {
+	digest := sha256.New()
+	digest.Write(data)
+	return digest.Sum(nil)
+}
 
 func eccSign(msg []byte, priKey []byte) (rSign []byte, sSign []byte, err error) {
 	defer func() {
@@ -29,7 +34,7 @@ func eccSign(msg []byte, priKey []byte) (rSign []byte, sSign []byte, err error) 
 	if err != nil {
 		return nil, nil, err
 	}
-	resultHash := hash.Sha256(msg)
+	resultHash := _sha256(msg)
 	r, s, err := ecdsa.Sign(rand.Reader, privateKey, resultHash)
 	if err != nil {
 		return nil, nil, err
@@ -59,11 +64,19 @@ func eccVerifySign(msg []byte, pubKey []byte, rText, sText []byte) bool {
 	}()
 	publicKeyInterface, _ := x509.ParsePKIXPublicKey(pubKey)
 	publicKey := publicKeyInterface.(*ecdsa.PublicKey)
-	resultHash := hash.Sha256(msg)
+	resultHash := _sha256(msg)
 
 	var r, s big.Int
-	r.UnmarshalText(rText)
-	s.UnmarshalText(sText)
+	err := r.UnmarshalText(rText)
+	if err != nil {
+		return false
+	}
+
+	err = s.UnmarshalText(sText)
+	if err != nil {
+		return false
+	}
+
 	result := ecdsa.Verify(publicKey, resultHash, &r, &s)
 	return result
 }
