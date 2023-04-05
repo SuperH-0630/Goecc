@@ -8,7 +8,6 @@ import (
 	"encoding/hex"
 	"encoding/pem"
 	"fmt"
-	"os"
 	"runtime"
 )
 
@@ -19,9 +18,8 @@ func eccEncrypt(plainText, pubKey []byte) (cipherText []byte, err error) {
 			switch err.(type) {
 			case runtime.Error:
 				// TODO 加入到日志中
-				_, _ = fmt.Fprintf(os.Stderr, "runtime err=%v,Check that the key or text is correct", err)
 			default:
-				_, _ = fmt.Fprintf(os.Stderr, "error=%v,check the cipherText ", err)
+				// TODO 加入到日志中
 			}
 		}
 	}()
@@ -45,9 +43,8 @@ func eccDecrypt(cipherText, priKey []byte) (msg []byte, err error) {
 			switch err.(type) {
 			case runtime.Error:
 				// TODO 加入到日志中
-				_, _ = fmt.Fprintf(os.Stderr, "runtime err=%v,Check that the key or text is correct", err)
 			default:
-				_, _ = fmt.Fprintf(os.Stderr, "error=%v,check the cipherText ", err)
+				// TODO 加入到日志中
 			}
 		}
 	}()
@@ -117,7 +114,6 @@ func EccEncrypt(plainText []byte, pubKey string) (base64CipherText string, err e
 	block, _ := pem.Decode([]byte(pubKey))
 	if block == nil {
 		// TODO 记录日志
-		_, _ = fmt.Fprintf(os.Stderr, "bad public key")
 		return "", fmt.Errorf("bad public key")
 	}
 
@@ -132,7 +128,6 @@ func EccDecrypt(base64CipherText, priKey string) (plainText []byte, err error) {
 	block, _ := pem.Decode([]byte(priKey))
 	if block == nil {
 		// TODO 记录日志
-		_, _ = fmt.Fprintf(os.Stderr, "bad private key")
 		return nil, fmt.Errorf("bad private key")
 	}
 

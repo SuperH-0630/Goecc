@@ -9,7 +9,6 @@ import (
 	"encoding/pem"
 	"fmt"
 	"math/big"
-	"os"
 	"runtime"
 
 	"git.wuntsong.com/wunchain/goecc/hash"
@@ -20,9 +19,9 @@ func eccSign(msg []byte, priKey []byte) (rSign []byte, sSign []byte, err error) 
 		if err := recover(); err != nil {
 			switch err.(type) {
 			case runtime.Error:
-				_, _ = fmt.Fprintf(os.Stderr, "runtime err=%v,Check that the key or text is correct", err)
+				// TODO 加入到日志中
 			default:
-				_, _ = fmt.Fprintf(os.Stderr, "error=%v,check the cipherText ", err)
+				// TODO 加入到日志中
 			}
 		}
 	}()
@@ -52,9 +51,9 @@ func eccVerifySign(msg []byte, pubKey []byte, rText, sText []byte) bool {
 		if err := recover(); err != nil {
 			switch err.(type) {
 			case runtime.Error:
-				_, _ = fmt.Fprintf(os.Stderr, "runtime err=%v,Check that the key or text is correct", err)
+				// TODO 加入到日志中
 			default:
-				_, _ = fmt.Fprintf(os.Stderr, "error=%v,check the cipherText ", err)
+				// TODO 加入到日志中
 			}
 		}
 	}()
@@ -129,7 +128,6 @@ func EccSign(msg []byte, priKey string) (hexrSign, hexsSign string, err error) {
 	block, _ := pem.Decode([]byte(priKey))
 	if block == nil {
 		// TODO 记录日志
-		_, _ = fmt.Fprintf(os.Stderr, "bad private key")
 		return "", "", fmt.Errorf("bad private key")
 	}
 
@@ -144,7 +142,6 @@ func EccVerifySign(msg []byte, hexrSign, hexsSign, pubKey string) bool {
 	block, _ := pem.Decode([]byte(pubKey))
 	if block == nil {
 		// TODO 记录日志
-		_, _ = fmt.Fprintf(os.Stderr, "bad public key")
 		return false
 	}
 

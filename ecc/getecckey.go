@@ -69,13 +69,13 @@ func GenerateEccKeyPem() (EccKey, error) {
 	}
 
 	priBlock := &pem.Block{
-		Type:  "WUNCHAIN PRIVATE KEY",
+		Type:  "EC PRIVATE KEY",
 		Bytes: privateBytes,
 	}
 	priKey := pem.EncodeToMemory(priBlock)
 
 	pubBlock := &pem.Block{
-		Type:  "PUBLIC KEY",
+		Type:  "EC PUBLIC KEY",
 		Bytes: publicBytes,
 	}
 	pubKey := pem.EncodeToMemory(pubBlock)
