@@ -1,4 +1,4 @@
-package ecc
+package goEncrypt_master
 
 import (
 	"crypto/ecdsa"
