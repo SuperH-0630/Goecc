@@ -30,7 +30,7 @@ func cryptPem() {
 	fmt.Printf("Pri: %s\n", eccKey.PrivateKey)
 	fmt.Printf("Pub: %s\n", eccKey.PublicKey)
 
-    text, err := ecc.EccEncrypt([]byte(msg), eccKey.PublicKey)
+	text, err := ecc.EccEncrypt([]byte(msg), eccKey.PublicKey)
 	if err != nil {
 		fmt.Println(err)
 		return
