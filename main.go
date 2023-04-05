@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"git.wuntsong.com/wunchain/goecc/ecc"
+	"github.com/SuperH-0630/Goecc/ecc"
 )
 
 func main() {

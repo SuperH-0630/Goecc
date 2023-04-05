@@ -1,4 +1,4 @@
-module git.wuntsong.com/wunchain/goecc
+module github.com/SuperH-0630/Goecc
 
 go 1.16
 
