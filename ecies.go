@@ -46,9 +46,7 @@ import (
 )
 
 var (
-	ErrImport                     = fmt.Errorf("ecies: failed to import key")
 	ErrInvalidCurve               = fmt.Errorf("ecies: invalid elliptic curve")
-	ErrInvalidParams              = fmt.Errorf("ecies: invalid ECIES parameters")
 	ErrInvalidPublicKey           = fmt.Errorf("ecies: invalid public key")
 	ErrSharedKeyIsPointAtInfinity = fmt.Errorf("ecies: shared key is point at infinity")
 	ErrSharedKeyTooBig            = fmt.Errorf("ecies: shared key params are too big")
@@ -144,7 +142,6 @@ func (prv *PrivateKey) GenerateShared(pub *PublicKey, skLen, macLen int) (sk []b
 
 var (
 	ErrKeyDataTooLong = fmt.Errorf("ecies: can't supply requested key data")
-	ErrSharedTooLong  = fmt.Errorf("ecies: shared secret is too long")
 	ErrInvalidMessage = fmt.Errorf("ecies: invalid message")
 )
 
@@ -266,20 +263,20 @@ func Encrypt(rand io.Reader, pub *PublicKey, m, s1, s2 []byte) (ct []byte, err e
 		return
 	}
 
-	hash := params.Hash()
+	_hash := params.Hash()
 	z, err := R.GenerateShared(pub, params.KeyLen, params.KeyLen)
 	if err != nil {
 		return
 	}
-	K, err := concatKDF(hash, z, s1, params.KeyLen+params.KeyLen)
+	K, err := concatKDF(_hash, z, s1, params.KeyLen+params.KeyLen)
 	if err != nil {
 		return
 	}
 	Ke := K[:params.KeyLen]
 	Km := K[params.KeyLen:]
-	hash.Write(Km)
-	Km = hash.Sum(nil)
-	hash.Reset()
+	_hash.Write(Km)
+	Km = _hash.Sum(nil)
+	_hash.Reset()
 
 	em, err := symEncrypt(rand, params, Ke, m)
 	if err != nil || len(em) <= params.BlockSize {
@@ -308,13 +305,13 @@ func (prv *PrivateKey) Decrypt(c, s1, s2 []byte) (m []byte, err error) {
 			return
 		}
 	}
-	hash := params.Hash()
+	_hash := params.Hash()
 
 	var (
-		rLen   int
-		hLen   int = hash.Size()
-		mStart int
-		mEnd   int
+		rLen   = 0
+		hLen   = _hash.Size()
+		mStart = 0
+		mEnd   = 0
 	)
 
 	switch c[0] {
@@ -349,16 +346,16 @@ func (prv *PrivateKey) Decrypt(c, s1, s2 []byte) (m []byte, err error) {
 		return
 	}
 
-	K, err := concatKDF(hash, z, s1, params.KeyLen+params.KeyLen)
+	K, err := concatKDF(_hash, z, s1, params.KeyLen+params.KeyLen)
 	if err != nil {
 		return
 	}
 
 	Ke := K[:params.KeyLen]
 	Km := K[params.KeyLen:]
-	hash.Write(Km)
-	Km = hash.Sum(nil)
-	hash.Reset()
+	_hash.Write(Km)
+	Km = _hash.Sum(nil)
+	_hash.Reset()
 
 	d := messageTag(params.Hash, Km, c[mStart:mEnd], s2)
 	if subtle.ConstantTimeCompare(c[mEnd:], d) != 1 {
@@ -376,13 +373,12 @@ func ParamsFromCurve(curve elliptic.Curve) (params *ECIESParams) {
 }
 
 var paramsFromCurve = map[elliptic.Curve]*ECIESParams{
-	// ethcrypto.S256(): ECIES_AES128_SHA256,
-	elliptic.P256(): ECIES_AES128_SHA256,
-	elliptic.P384(): ECIES_AES256_SHA384,
-	elliptic.P521(): ECIES_AES256_SHA512,
+	elliptic.P256(): ECIESAes128Sha256,
+	elliptic.P384(): ECIESAes256Sha384,
+	elliptic.P521(): ECIESAes256Sha512,
 }
 var (
-	ECIES_AES128_SHA256 = &ECIESParams{
+	ECIESAes128Sha256 = &ECIESParams{
 		Hash:      sha256.New,
 		hashAlgo:  crypto.SHA256,
 		Cipher:    aes.NewCipher,
@@ -390,15 +386,7 @@ var (
 		KeyLen:    16,
 	}
 
-	ECIES_AES256_SHA256 = &ECIESParams{
-		Hash:      sha256.New,
-		hashAlgo:  crypto.SHA256,
-		Cipher:    aes.NewCipher,
-		BlockSize: aes.BlockSize,
-		KeyLen:    32,
-	}
-
-	ECIES_AES256_SHA384 = &ECIESParams{
+	ECIESAes256Sha384 = &ECIESParams{
 		Hash:      sha512.New384,
 		hashAlgo:  crypto.SHA384,
 		Cipher:    aes.NewCipher,
@@ -406,7 +394,7 @@ var (
 		KeyLen:    32,
 	}
 
-	ECIES_AES256_SHA512 = &ECIESParams{
+	ECIESAes256Sha512 = &ECIESParams{
 		Hash:      sha512.New,
 		hashAlgo:  crypto.SHA512,
 		Cipher:    aes.NewCipher,
